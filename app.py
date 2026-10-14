@@ -9,7 +9,8 @@ import streamlit as st
 
 from analysis_agent import DataAnalysisAgent
 from analysis_agent.agent import AgentExecutionError
-from analysis_agent.charting import build_chart
+from analysis_agent.charting import build_chart, build_static_chart
+from analysis_agent.models import AnalysisPlan
 from analysis_agent.semantic_layer import DIMENSIONS, METRICS
 
 
@@ -106,6 +107,11 @@ def get_agent(provider: str) -> DataAnalysisAgent:
     return DataAnalysisAgent(provider=provider)
 
 
+@st.cache_data(show_spinner=False, max_entries=64)
+def get_chart_image(rows: list[dict], plan: dict) -> bytes | None:
+    return build_static_chart(pd.DataFrame(rows), AnalysisPlan.model_validate(plan))
+
+
 manifest, evaluation = ensure_artifacts()
 
 with st.sidebar:
@@ -175,12 +181,20 @@ with analysis_tab:
             st.warning("；".join(result.warnings))
 
         frame = pd.DataFrame(result.rows)
-        figure = build_chart(frame, result.plan)
         chart_col, detail_col = st.columns([1.25, 0.75], gap="large")
         with chart_col:
             st.subheader("自动图表")
-            if figure is not None:
-                st.plotly_chart(figure, width="stretch", config={"displaylogo": False})
+            chart_image = get_chart_image(result.rows, result.plan.model_dump())
+            chart_mode = st.segmented_control("图表模式", ["标准图", "交互图"], default="标准图")
+            if chart_mode == "交互图":
+                figure = build_chart(frame, result.plan)
+                if figure is not None:
+                    st.plotly_chart(figure, width="stretch", config={"displaylogo": False})
+            elif chart_image is not None:
+                st.image(chart_image, width="stretch")
+            if chart_image is not None:
+                st.download_button("下载图表 PNG", data=chart_image, file_name="analysis_chart.png",
+                                   mime="image/png", icon=":material/download:")
         with detail_col:
             st.subheader("分析口径")
             st.write(result.metric_definition)
