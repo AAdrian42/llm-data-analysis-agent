@@ -27,12 +27,32 @@ st.markdown(
       .stApp { background: #f4f6f8; color: #17212b; }
       .block-container { max-width: 1480px; padding-top: 1.3rem; }
       h1, h2, h3 { letter-spacing: 0; }
-      [data-testid="stSidebar"] { background: #18232d; }
-      [data-testid="stSidebar"] * { color: #f7f9fb; }
+      [data-testid="stSidebar"] { background: #e8eef2; }
+      [data-testid="stSidebar"] * { color: #17212b; }
       [data-testid="stSidebar"] div[data-testid="stMetric"] {
-        background: #243440; border: 1px solid #39505e; border-radius: 6px;
+        background: #ffffff; border: 1px solid #cbd5dd; border-radius: 6px;
       }
-      [data-testid="stSidebar"] div[data-testid="stMetric"] * { color: #ffffff; }
+      [data-testid="stTextArea"] textarea,
+      [data-testid="stTextInput"] input {
+        background-color: #ffffff !important; color: #17212b !important;
+        -webkit-text-fill-color: #17212b !important; caret-color: #147d92;
+      }
+      [data-testid="stTextArea"] textarea::placeholder {
+        color: #59636f !important; -webkit-text-fill-color: #59636f !important;
+      }
+      [data-testid="stSelectbox"] [data-baseweb="select"] > div {
+        background-color: #ffffff !important; color: #17212b !important;
+        border-color: #cbd5dd;
+      }
+      [data-testid="stSelectbox"] [data-baseweb="select"] * {
+        color: #17212b !important;
+      }
+      [role="listbox"], [role="option"] {
+        background-color: #ffffff; color: #17212b;
+      }
+      [role="option"]:hover { background-color: #edf7f8; }
+      [data-testid="stTextArea"]:focus-within > div { border-color: #147d92; }
+      [data-testid="stMetric"] * { color: #17212b; }
       div[data-testid="stMetric"] {
         background: #ffffff; border: 1px solid #d9e0e6; border-radius: 6px; padding: 12px;
       }

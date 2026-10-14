@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+
+if TYPE_CHECKING:
+    import plotly.graph_objects as go
 
 from .models import AnalysisPlan
 from .semantic_layer import DIMENSIONS, METRICS
@@ -26,6 +29,10 @@ def resolved_chart_type(plan: AnalysisPlan) -> str:
 def build_chart(frame: pd.DataFrame, plan: AnalysisPlan) -> go.Figure | None:
     if frame.empty or "metric_value" not in frame:
         return None
+    # Load the chart library only when there is a result to plot.
+    import plotly.express as px
+    import plotly.graph_objects as go
+
     chart_type = resolved_chart_type(plan)
     metric = METRICS[plan.metric]
     display = frame.copy()
